@@ -1,0 +1,203 @@
+public class analysis.ForwardAnalysis extends soot.toolkits.scalar.ForwardFlowAnalysis
+{
+    protected analysis.VulnerabilityReporter reporter;
+    protected soot.SootMethod method;
+
+    public void <init>(soot.Body, analysis.VulnerabilityReporter)
+    {
+        analysis.ForwardAnalysis r0;
+        soot.Body r1;
+        analysis.VulnerabilityReporter r2;
+        soot.toolkits.graph.ExceptionalUnitGraph $r3;
+        soot.SootMethod $r4, $r7;
+        java.lang.StringBuilder $r5, $r9;
+        java.io.PrintStream $r6;
+        java.lang.String $r8, $r10;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        r1 := @parameter0: soot.Body;
+
+        r2 := @parameter1: analysis.VulnerabilityReporter;
+
+        $r3 = new soot.toolkits.graph.ExceptionalUnitGraph;
+
+        specialinvoke $r3.<soot.toolkits.graph.ExceptionalUnitGraph: void <init>(soot.Body)>(r1);
+
+        specialinvoke r0.<soot.toolkits.scalar.ForwardFlowAnalysis: void <init>(soot.toolkits.graph.DirectedGraph)>($r3);
+
+        $r4 = virtualinvoke r1.<soot.Body: soot.SootMethod getMethod()>();
+
+        r0.<analysis.ForwardAnalysis: soot.SootMethod method> = $r4;
+
+        r0.<analysis.ForwardAnalysis: analysis.VulnerabilityReporter reporter> = r2;
+
+        $r6 = <java.lang.System: java.io.PrintStream out>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Method: ");
+
+        $r7 = r0.<analysis.ForwardAnalysis: soot.SootMethod method>;
+
+        $r8 = virtualinvoke $r7.<soot.SootMethod: java.lang.String getSignature()>();
+
+        $r9 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r6.<java.io.PrintStream: void println(java.lang.String)>($r10);
+
+        return;
+    }
+
+    protected void prettyPrint(java.lang.Object, soot.Unit, java.lang.Object)
+    {
+        analysis.ForwardAnalysis r0;
+        java.lang.Object r1, r3;
+        soot.Unit r2;
+        java.lang.String r4, $r6, $r7, $r8;
+        java.lang.Object[] $r5;
+        java.io.PrintStream $r9;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.lang.Object;
+
+        $r5 = newarray (java.lang.Object)[6];
+
+        $r5[0] = "In Fact: ";
+
+        $r6 = virtualinvoke r1.<java.lang.Object: java.lang.String toString()>();
+
+        $r5[1] = $r6;
+
+        $r5[2] = "Stmt: ";
+
+        $r7 = virtualinvoke r2.<java.lang.Object: java.lang.String toString()>();
+
+        $r5[3] = $r7;
+
+        $r5[4] = "Out Fact: ";
+
+        $r8 = virtualinvoke r3.<java.lang.Object: java.lang.String toString()>();
+
+        $r5[5] = $r8;
+
+        r4 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("\t%10s%s\n\t%10s%s\n\t%10s%s\n", $r5);
+
+        $r9 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r9.<java.io.PrintStream: void println(java.lang.String)>(r4);
+
+        return;
+    }
+
+    public java.util.Map getUnitToAfterFlow()
+    {
+        analysis.ForwardAnalysis r0;
+        java.util.Map $r1;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        $r1 = r0.<analysis.ForwardAnalysis: java.util.Map unitToAfterFlow>;
+
+        return $r1;
+    }
+
+    protected void flowThrough(java.lang.Object, soot.Unit, java.lang.Object)
+    {
+        analysis.ForwardAnalysis r0;
+        java.lang.Object r1, r3;
+        soot.Unit r2;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.lang.Object;
+
+        return;
+    }
+
+    protected java.lang.Object newInitialFlow()
+    {
+        analysis.ForwardAnalysis r0;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        return null;
+    }
+
+    protected void merge(java.lang.Object, java.lang.Object, java.lang.Object)
+    {
+        analysis.ForwardAnalysis r0;
+        java.lang.Object r1, r2, r3;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        r3 := @parameter2: java.lang.Object;
+
+        return;
+    }
+
+    protected void copy(java.lang.Object, java.lang.Object)
+    {
+        analysis.ForwardAnalysis r0;
+        java.lang.Object r1, r2;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        return;
+    }
+
+    public void doAnalysis()
+    {
+        analysis.ForwardAnalysis r0;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        specialinvoke r0.<soot.toolkits.scalar.ForwardFlowAnalysis: void doAnalysis()>();
+
+        return;
+    }
+
+    protected volatile void flowThrough(java.lang.Object, java.lang.Object, java.lang.Object)
+    {
+        analysis.ForwardAnalysis r0;
+        java.lang.Object r1, r2, r3, $r4, $r6;
+        soot.Unit $r5;
+
+        r0 := @this: analysis.ForwardAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        r3 := @parameter2: java.lang.Object;
+
+        $r6 = (java.lang.Object) r1;
+
+        $r5 = (soot.Unit) r2;
+
+        $r4 = (java.lang.Object) r3;
+
+        virtualinvoke r0.<analysis.ForwardAnalysis: void flowThrough(java.lang.Object,soot.Unit,java.lang.Object)>($r6, $r5, $r4);
+
+        return;
+    }
+}

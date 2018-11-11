@@ -1,0 +1,32 @@
+public class analysis.exercise1.MisuseAnalysis extends analysis.AbstractAnalysis
+{
+
+    public void <init>(soot.Body, analysis.VulnerabilityReporter)
+    {
+        analysis.exercise1.MisuseAnalysis r0;
+        soot.Body r1;
+        analysis.VulnerabilityReporter r2;
+
+        r0 := @this: analysis.exercise1.MisuseAnalysis;
+
+        r1 := @parameter0: soot.Body;
+
+        r2 := @parameter1: analysis.VulnerabilityReporter;
+
+        specialinvoke r0.<analysis.AbstractAnalysis: void <init>(soot.Body,analysis.VulnerabilityReporter)>(r1, r2);
+
+        return;
+    }
+
+    protected void flowThrough(soot.Unit)
+    {
+        analysis.exercise1.MisuseAnalysis r0;
+        soot.Unit r1;
+
+        r0 := @this: analysis.exercise1.MisuseAnalysis;
+
+        r1 := @parameter0: soot.Unit;
+
+        return;
+    }
+}

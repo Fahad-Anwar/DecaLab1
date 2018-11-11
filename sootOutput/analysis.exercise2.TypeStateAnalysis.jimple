@@ -1,0 +1,162 @@
+public class analysis.exercise2.TypeStateAnalysis extends analysis.ForwardAnalysis
+{
+
+    public void <init>(soot.Body, analysis.VulnerabilityReporter)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        soot.Body r1;
+        analysis.VulnerabilityReporter r2;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: soot.Body;
+
+        r2 := @parameter1: analysis.VulnerabilityReporter;
+
+        specialinvoke r0.<analysis.ForwardAnalysis: void <init>(soot.Body,analysis.VulnerabilityReporter)>(r1, r2);
+
+        return;
+    }
+
+    protected void flowThrough(java.util.Set, soot.Unit, java.util.Set)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.util.Set r1, r3;
+        soot.Unit r2;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.util.Set;
+
+        virtualinvoke r0.<analysis.exercise2.TypeStateAnalysis: void copy(java.util.Set,java.util.Set)>(r1, r3);
+
+        virtualinvoke r0.<analysis.exercise2.TypeStateAnalysis: void prettyPrint(java.lang.Object,soot.Unit,java.lang.Object)>(r1, r2, r3);
+
+        return;
+    }
+
+    protected java.util.Set newInitialFlow()
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        return null;
+    }
+
+    protected void copy(java.util.Set, java.util.Set)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.util.Set r1, r2;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: java.util.Set;
+
+        return;
+    }
+
+    protected void merge(java.util.Set, java.util.Set, java.util.Set)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.util.Set r1, r2, r3;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: java.util.Set;
+
+        r2 := @parameter1: java.util.Set;
+
+        r3 := @parameter2: java.util.Set;
+
+        return;
+    }
+
+    protected volatile void copy(java.lang.Object, java.lang.Object)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.lang.Object r1, r2;
+        java.util.Set $r3, $r4;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        $r4 = (java.util.Set) r1;
+
+        $r3 = (java.util.Set) r2;
+
+        virtualinvoke r0.<analysis.exercise2.TypeStateAnalysis: void copy(java.util.Set,java.util.Set)>($r4, $r3);
+
+        return;
+    }
+
+    protected volatile java.lang.Object newInitialFlow()
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.util.Set $r1;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        $r1 = virtualinvoke r0.<analysis.exercise2.TypeStateAnalysis: java.util.Set newInitialFlow()>();
+
+        return $r1;
+    }
+
+    protected volatile void flowThrough(java.lang.Object, soot.Unit, java.lang.Object)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.lang.Object r1, r3;
+        soot.Unit r2;
+        java.util.Set $r4, $r5;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: soot.Unit;
+
+        r3 := @parameter2: java.lang.Object;
+
+        $r5 = (java.util.Set) r1;
+
+        $r4 = (java.util.Set) r3;
+
+        virtualinvoke r0.<analysis.exercise2.TypeStateAnalysis: void flowThrough(java.util.Set,soot.Unit,java.util.Set)>($r5, r2, $r4);
+
+        return;
+    }
+
+    protected volatile void merge(java.lang.Object, java.lang.Object, java.lang.Object)
+    {
+        analysis.exercise2.TypeStateAnalysis r0;
+        java.lang.Object r1, r2, r3;
+        java.util.Set $r4, $r5, $r6;
+
+        r0 := @this: analysis.exercise2.TypeStateAnalysis;
+
+        r1 := @parameter0: java.lang.Object;
+
+        r2 := @parameter1: java.lang.Object;
+
+        r3 := @parameter2: java.lang.Object;
+
+        $r6 = (java.util.Set) r1;
+
+        $r5 = (java.util.Set) r2;
+
+        $r4 = (java.util.Set) r3;
+
+        virtualinvoke r0.<analysis.exercise2.TypeStateAnalysis: void merge(java.util.Set,java.util.Set,java.util.Set)>($r6, $r5, $r4);
+
+        return;
+    }
+}

@@ -1,0 +1,69 @@
+public abstract class analysis.AbstractAnalysis extends java.lang.Object
+{
+    protected analysis.VulnerabilityReporter reporter;
+    protected soot.Body body;
+    protected soot.SootMethod method;
+
+    protected void <init>(soot.Body, analysis.VulnerabilityReporter)
+    {
+        analysis.AbstractAnalysis r0;
+        soot.Body r1;
+        analysis.VulnerabilityReporter r2;
+        soot.SootMethod $r3;
+
+        r0 := @this: analysis.AbstractAnalysis;
+
+        r1 := @parameter0: soot.Body;
+
+        r2 := @parameter1: analysis.VulnerabilityReporter;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<analysis.AbstractAnalysis: soot.Body body> = r1;
+
+        r0.<analysis.AbstractAnalysis: analysis.VulnerabilityReporter reporter> = r2;
+
+        $r3 = virtualinvoke r1.<soot.Body: soot.SootMethod getMethod()>();
+
+        r0.<analysis.AbstractAnalysis: soot.SootMethod method> = $r3;
+
+        return;
+    }
+
+    protected abstract void flowThrough(soot.Unit);
+
+    public void doAnalysis()
+    {
+        analysis.AbstractAnalysis r0;
+        soot.Unit r1;
+        java.util.Iterator r2;
+        soot.Body $r3;
+        soot.PatchingChain $r4;
+        boolean $z0;
+        java.lang.Object $r5;
+
+        r0 := @this: analysis.AbstractAnalysis;
+
+        $r3 = r0.<analysis.AbstractAnalysis: soot.Body body>;
+
+        $r4 = virtualinvoke $r3.<soot.Body: soot.PatchingChain getUnits()>();
+
+        r2 = virtualinvoke $r4.<soot.PatchingChain: java.util.Iterator iterator()>();
+
+        goto label2;
+
+     label1:
+        $r5 = interfaceinvoke r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r1 = (soot.Unit) $r5;
+
+        virtualinvoke r0.<analysis.AbstractAnalysis: void flowThrough(soot.Unit)>(r1);
+
+     label2:
+        $z0 = interfaceinvoke r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label1;
+
+        return;
+    }
+}
