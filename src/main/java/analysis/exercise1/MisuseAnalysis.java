@@ -13,6 +13,5 @@ public class MisuseAnalysis extends AbstractAnalysis{
 	@Override
 	protected void flowThrough(Unit unit) {
 		// TODO: Implement your analysis here.
-		System.out.println("HIw");
 	}
 }
