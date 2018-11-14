@@ -1,9 +1,5 @@
 package analysis.exercise2;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -17,26 +13,19 @@ import analysis.ForwardAnalysis;
 import analysis.VulnerabilityReporter;
 import soot.Body;
 import soot.SootMethod;
-import soot.SootMethodRef;
-import soot.Type;
 import soot.Unit;
-import soot.UnitBox;
-import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.JastAddJ.IfStmt;
-import soot.jimple.InvokeExpr;
 import soot.jimple.ReturnVoidStmt;
+import soot.jimple.StaticFieldRef;
 import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JGotoStmt;
 import soot.jimple.internal.JIfStmt;
 import soot.jimple.internal.JInvokeStmt;
-import soot.jimple.internal.JNeExpr;
 import soot.jimple.internal.JNewExpr;
 import soot.jimple.internal.JSpecialInvokeExpr;
 import soot.jimple.internal.JVirtualInvokeExpr;
-import soot.tagkit.Tag;
-import soot.util.Switch;
 
 public class TypeStateAnalysis extends ForwardAnalysis<Set<FileStateFact>> {
 
@@ -47,6 +36,7 @@ public class TypeStateAnalysis extends ForwardAnalysis<Set<FileStateFact>> {
 	@Override
 	protected void flowThrough(Set<FileStateFact> in, Unit unit, Set<FileStateFact> out) {
 		prettyPrint(in, unit, out);
+		Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
 		if (unit.toString().equals("virtualinvoke $r0.<target.exercise2.File: void open()>()")
 				&& method.toString().equals("<target.exercise2.FileClosed: void test2()>")) {
 			System.out.println("equals");
@@ -59,9 +49,10 @@ public class TypeStateAnalysis extends ForwardAnalysis<Set<FileStateFact>> {
 		} else if (unit.toString().equals("virtualinvoke $r1.<target.exercise2.File: void open()>()")
 				&& method.getSignature().equals("<target.exercise2.FileClosedAliasing: void test2()>")) {
 			System.out.println("found");
+		} else if (method.getSignature().equals("<target.exercise2.FileNotClosedAliasing: void test2()>")) {
+			System.out.println("final");
 		}
 		if (unit instanceof JAssignStmt) {
-			SootMethod flow = this.method;
 			List<ValueBox> box2 = unit.getUseAndDefBoxes();
 
 			ValueBox vb1 = box2.get(0);
@@ -69,14 +60,13 @@ public class TypeStateAnalysis extends ForwardAnalysis<Set<FileStateFact>> {
 			
 			ValueBox vb2 = box2.get(1);
 			Value v2 = vb2.getValue();
-			Type v1Type = v1.getType();
+			v1.getType();
 			if (v2 instanceof JNewExpr) {
 				
-				Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
 				if (unitAfter.containsKey(unit)) {
 
-					Set<FileStateFact> initial = this.entryInitialFlow();
-					Set<FileStateFact> filter = this.getFlowAfter(unit);
+					this.entryInitialFlow();
+					this.getFlowAfter(unit);
 					Set<FileStateFact> fState = unitAfter.get(unit);
 					Set<Value> values = new HashSet<Value>();
 					values.add(v1);
@@ -87,49 +77,79 @@ public class TypeStateAnalysis extends ForwardAnalysis<Set<FileStateFact>> {
 					copy(fState, out);
 				} 
 			} else if (v2 instanceof JVirtualInvokeExpr){
-				Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
+				
 				// check returntype of v2 -> refbox . name;
 				Set<Value> values = new HashSet<Value>();
 				values.add(v1);
-				Type type = v2.getType();
-				List<Value> args = ((JVirtualInvokeExpr) v2).getArgs();
-				Value base = ((JVirtualInvokeExpr) v2).getBase();
-				List<ValueBox> useBoxes = v2.getUseBoxes();
-				ValueBox baseBox = ((JVirtualInvokeExpr) v2).getBaseBox();
+				v2.getType();
+				v2.getUseBoxes();
 				SootMethod method = ((JVirtualInvokeExpr) v2).getMethod();
-				List<Tag> tags = method.getTags();
-				Type returnType = method.getReturnType();
+				method.getTags();
+				method.getReturnType();
 				String subSig = method.getSubSignature();
 				FileStateFact fsf = null;
 				Set<FileStateFact> source = unitAfter.get(unit);
 				
 				//may ge get unitbefore (in) statement. 
 				if(subSig.equals("void close()")) {
-					SootMethodRef methodRef = ((JVirtualInvokeExpr) v2).getMethodRef();
+					((JVirtualInvokeExpr) v2).getMethodRef();
 					fsf = new FileStateFact(values, FileState.Close);
 					source.add(fsf);
 				} else if(subSig.equals("void open()")) {
 					fsf = new FileStateFact(values, FileState.Open);
 					source.add(fsf);
 				} else {
-//					values.remove(v1);
-//					values.add(base);
-//					in.forEach(f -> {
-//						
-//					});
 					source.addAll(in);
 				}
 				
 				copy(source, out);
+			} else if (v1 instanceof StaticFieldRef) {
+				Set<Value> values = new HashSet<Value>();
+				values.add(v1);
+				v2.getType();
+				method.getTags();
+				method.getReturnType();
+				method.getSubSignature();
+//				FileStateFact fsf = null;
+				Set<FileStateFact> source = null;
+				if(unitAfter.containsKey(unit)) {
+					
+					source = unitAfter.get(unit);
+				}
+				Iterator<FileStateFact> iterator = in.iterator();
+				while(iterator.hasNext()) {
+					FileStateFact next = iterator.next();
+					if(next.containsAlias(v2)) {
+//						fsf = new FileStateFact(values, next.getState());
+						next.addAlias(v1);
+					}
+				}
+				source.addAll(in);
+				copy(source, out);
+			} else if (v2 instanceof StaticFieldRef) {
+				Set<Value> values = new HashSet<Value>();
+				values.add(v1);
+				Set<FileStateFact> source = null;
+				if(unitAfter.containsKey(unit)) {
+					
+					source = unitAfter.get(unit);
+				}
+				Iterator<FileStateFact> iterator = in.iterator();
+				while(iterator.hasNext()) {
+					FileStateFact next = iterator.next();
+					if(next.containsAlias(v2)) {
+						next.addAlias(v1);
+//						fsf = new FileStateFact(values, next.getState());
+//						source.add(fsf);
+					}
+				}
+				source.addAll(in);
+				copy(source, out);
 			} else {
-				System.out.println("else1");
+				System.out.println("else1" + unit);
 			}
 		} else if (unit instanceof JInvokeStmt) {
-			SootMethod mehtod = this.method;
-			Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
 			if (unitAfter.containsKey(unit)) {
-//				Set<FileStateFact> initial2 = this.entryInitialFlow();
-//				Set<FileStateFact> fState = unitAfter.get(unit);
 				List<ValueBox> box2 = unit.getUseAndDefBoxes();
 
 				ValueBox vb1 = box2.get(0);
@@ -157,141 +177,66 @@ public class TypeStateAnalysis extends ForwardAnalysis<Set<FileStateFact>> {
 				} else if (v2 instanceof JVirtualInvokeExpr) {
 					// check returntype of v2 -> refbox . name;
 					Set<Value> values = new HashSet<Value>();
-					values.add(v1);
-					Type type = v2.getType();
-					List<Value> args = ((JVirtualInvokeExpr) v2).getArgs();
-					List<ValueBox> useBoxes = v2.getUseBoxes();
-					ValueBox baseBox = ((JVirtualInvokeExpr) v2).getBaseBox();
+					values.add(v1);					
 					SootMethod method = ((JVirtualInvokeExpr) v2).getMethod();
-					List<Tag> tags = method.getTags();
-					Type returnType = method.getReturnType();
 					String subSig = method.getSubSignature();
 					Value base = ((JVirtualInvokeExpr) v2).getBase();
-					Set<FileStateFact> before = this.getFlowBefore(unit);
-					Set<FileStateFact> whatsIn = in;
 					if(subSig.equals("void close()")) {
-//						SootMethodRef methodRef = ((JVirtualInvokeExpr) v2).getMethodRef();
-//						fsf = new FileStateFact(values, FileState.Close);
-						Iterator<FileStateFact> iterator = in.iterator();
-						FileStateFact factToRemove = null;
-						while(iterator.hasNext()) {
-							FileStateFact next = iterator.next();
-							if (next.containsAlias(base)) {
-								factToRemove = next;
-							}
-						}
-//						in.remove(factToRemove);
-//						in.add(new FileStateFact(values, FileState.Close));
 						FileStateFact fsf = new FileStateFact(values, FileState.Close);
 						out.add(fsf);
-//						in.forEach(f -> {
-//							if(f.containsAlias(base)) {
-//								in.remove(f);								
-//								FileStateFact fsf = ;
-//								in.add(fsf);
-//							}
-//						});
 						in.forEach(f -> {
 							if(!f.containsAlias(v1)) {
 								out.add(f);
 								System.out.println("!contains");
 							}
 						});
-//						copy(in, out);
 					} else if(subSig.equals("void open()")) {
-//						in.forEach(f -> {
-//							if(f.containsAlias(base)) {
-//								f.updateState(FileState.Open);
-//							}
-//						});
+						FileStateFact copy = null;
 						Iterator<FileStateFact> iterator = in.iterator();
-						FileStateFact factToRemove = null;
 						while(iterator.hasNext()) {
 							FileStateFact next = iterator.next();
 							if (next.containsAlias(base)) {
-								factToRemove = next;
+								copy = next.copy();
+							} else {
+								out.add(next);
 							}
 						}
-//						Value cloned = (Value)v1.clone();
-						values = new HashSet<Value>();
-						values.add(v1);
-						
 						Set<FileStateFact> fState = unitAfter.get(unit);
-						FileStateFact fsf = new FileStateFact(values, FileState.Open);
-						fState.add(fsf);
-//						unitAfter.putIfAbsent(unit, fState);
-//						fState.addAll(in);
+						copy.updateState(FileState.Open);
+						fState.add(copy);
 						copy(fState, out);
-						
-//						in.remove(factToRemove);
-//						in.add(fsf);
-//						fsf = new FileStateFact(values, FileState.Open);
 					}
-//					Set<FileStateFact> source = unitAfter.get(unit);
-//					source.addAll(in);
-//					source.add(fsf);
-					
 				}
 
 			}
-			// Set<FileStateFact> filter = this.getFlowAfter(unit);
-			// filter.add(new FileStateFact(aliases, state))
 		} else if (unit instanceof ReturnVoidStmt) {
-			SootMethod m  = this.method;
-			Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
 			Set<FileStateFact> flow = this.getFlowBefore(unit);
 			Set<FileStateFact> source = unitAfter.get(unit);
 			
 			source.addAll(flow);
-//			FileStateFact fsf = new FileStateFact(values, FileState.Open);
-//			flow.forEach(f -> {
-////				if(f.getState().equals(FileState.Open)) {
-//					source.add(f);
-//					copy(source, out);
-////				}
-//				
-//			});
-//			FileStateFact next = flow.iterator().next();
-//			source.add(next);
 			copy(source, out);
-			
-			
-			
 		} else if(unit instanceof IfStmt){
-			SootMethod m  = this.method;
-			Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
 			Set<FileStateFact> flow = this.getFlowBefore(unit);
 			Set<FileStateFact> source = unitAfter.get(unit);
-			Set<Value> values = new HashSet<Value>();
-//			FileStateFact fsf = new FileStateFact(values, FileState.Open);
+			new HashSet<Value>();
 			flow.forEach(f -> {
-//				if(f.getState().equals(FileState.Open)) {
-					source.add(f);
-					copy(source, out);
-//				}
-				
+				source.add(f);
+				copy(source, out);
 			});
 		} else if(unit instanceof JIfStmt){
-			SootMethod m  = this.method;
-			Map<Unit, Set<FileStateFact>> unitAfter = this.getUnitToAfterFlow();
 			Set<FileStateFact> flow = this.getFlowBefore(unit);
 			Set<FileStateFact> source = unitAfter.get(unit);
-			Set<Value> values = new HashSet<Value>();
-//			FileStateFact fsf = new FileStateFact(values, FileState.Open);
+			new HashSet<Value>();
 			flow.forEach(f -> {
-//				if(f.getState().equals(FileState.Open)) {
-					source.add(f);
-					copy(source, out);
-//				}
-				
+				source.add(f);
+				copy(source, out);
+
 			});
 		} else if (unit instanceof JGotoStmt){
 			copy(in, out);
-			System.out.println("goto");
 		} else {
 			System.out.println("else" + unit);
 		}
-		
 		prettyPrint(in, unit, out);
 	}
 
